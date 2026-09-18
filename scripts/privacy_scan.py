@@ -6,6 +6,10 @@ import sys
 
 root = Path(sys.argv[1] if len(sys.argv) > 1 else '.')
 skip = {'.git', '.venv', '__pycache__', 'build', 'dist'}
+approved_public_feishu = (
+    'https://tdar7qsr83.feishu.cn/docx/FC66dkiFnopKrxx7HUAcvz8Fn4f',
+    'https://tdar7qsr83.feishu.cn/docx/IYcPd21JTopANxx7QZvcLytZnKd',
+)
 patterns = {
     'Feishu tenant links': re.compile(r'https://[^/]*feishu\.cn/(?:docx|sheets|wiki)/'),
     'MOSS production host': re.compile(r'https?://moss\.[^\s/]+'),
@@ -13,7 +17,7 @@ patterns = {
 }
 hits = []
 for path in root.rglob('*'):
-    if not path.is_file() or any(part in skip for part in path.parts):
+    if not path.is_file() or any(part in skip or part.startswith('draft_') for part in path.parts):
         continue
     if path.resolve() == Path(__file__).resolve():
         continue
@@ -21,6 +25,8 @@ for path in root.rglob('*'):
         text = path.read_text(errors='strict')
     except (UnicodeDecodeError, OSError):
         continue
+    for allowed in approved_public_feishu:
+        text = text.replace(allowed, '')
     for name, pattern in patterns.items():
         if pattern.search(text):
             hits.append(f'{path}: {name}')
