@@ -29,7 +29,7 @@ def load_rules(path=None):
         raise ValueError('规则包需要 schema_version=1.0 和 version')
     if pack.get('status') != 'confirmed' or not pack.get('approved_by') or not pack.get('approved_at'):
         raise ValueError('规则包尚未经负责人确认；不能作为生效规则自动加载')
-    for name in ('fee_rules', 'profit_targets'):
+    for name in ('fee_rules', 'profit_targets', 'funding_options'):
         ids = [r.get('id') for r in pack.get(name, [])]
         if None in ids or len(ids) != len(set(ids)):
             raise ValueError(f'{name} 中规则 id 缺失或重复')
