@@ -15,6 +15,12 @@ def normalize_request(request: dict) -> dict:
 
 
 @server.tool()
+def screen_funders(request: dict) -> dict:
+    """按贸易方式、目的地和结构化付款条件筛选已确认资金政策。"""
+    return engine.screen_funders(request, load_rules())
+
+
+@server.tool()
 def validate_quote(request: dict) -> dict:
     """检查缺项、有效期、重复费用、适用条件和承担比例。"""
     return engine.validate_quote(request, load_rules())
