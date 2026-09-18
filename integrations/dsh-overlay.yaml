@@ -1,0 +1,12 @@
+- id: mcp-export-quote
+  name: '@deepseek-ai/dsh-mcp-client'
+  config:
+    serverName: export_quote
+    transport: stdio
+    command: /absolute/path/export-quote-engine/.venv/bin/export-quote-mcp
+    args: []
+    env:
+      EXPORT_QUOTE_RULES: /secure/company-rules/approved-v1.json
+      EXPORT_QUOTE_STORE: /secure/quote-snapshots
+      EXPORT_QUOTE_MOSS_MAPPING: /secure/company-rules/moss-mapping.json
+    failOnStartupError: true
