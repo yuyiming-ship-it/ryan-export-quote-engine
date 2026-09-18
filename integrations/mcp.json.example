@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "export_quote": {
+      "command": "/绝对路径/ryan-export-quote-engine/.venv/bin/export-quote-mcp",
+      "args": [],
+      "env": {
+        "EXPORT_QUOTE_RULES": "/私有目录/company-rules/approved-v1.json",
+        "EXPORT_QUOTE_STORE": "/私有目录/quote-snapshots",
+        "EXPORT_QUOTE_MOSS_MAPPING": "/私有目录/company-rules/moss-mapping.json"
+      }
+    }
+  }
+}
