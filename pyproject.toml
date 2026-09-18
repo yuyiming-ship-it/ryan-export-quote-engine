@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "export-quote-engine"
+version = "0.1.0"
+description = "Evidence-based vehicle export quotation engine with private rule packs"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+mcp = ["mcp>=1.30,<2"]
+
+[project.readme]
+file = "README.md"
+content-type = "text/markdown"
+
+license = "MIT"
+
+[project.scripts]
+export-quote = "export_quote.cli:main"
+export-quote-mcp = "export_quote.mcp_server:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
