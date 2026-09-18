@@ -14,6 +14,8 @@
 
 ## 安装与一句话调用
 
+第一次使用请直接看 **[小白使用说明](docs/QUICKSTART.zh-CN.md)**。它从安装 Python 开始，逐步讲解如何在 Codex、Kimi Code、Tencent WorkBuddy、Claude 和 Cursor 中接入，并附常见报错处理。
+
 ```bash
 git clone https://github.com/yuyiming-ship-it/ryan-export-quote-engine.git
 cd ryan-export-quote-engine
@@ -25,6 +27,17 @@ python3 -m venv .venv
 配置 Skill/MCP 后，日常可直接说：
 
 > 按这份询价比较车源、运输和资金方案，给出建议售价，并准备 MOSS 填写材料。
+
+| 使用产品 | 接入方式 | 当前支持情况 |
+|---|---|---|
+| Codex 桌面版 / CLI / IDE | 本地 MCP + Skill | 支持 |
+| Kimi Code CLI | 本地 MCP；可另装 Skill | 支持 |
+| Tencent WorkBuddy | 项目级或用户级 MCP | 支持 |
+| Claude Desktop / Claude Code | 本地 MCP | 支持 |
+| Cursor | 项目级 MCP | 支持 |
+| DeepSeek DSH | DSH MCP client overlay | 支持，开发者预览 |
+| 其他 AI 工具 | 能启动 stdio MCP 即可接入 | 通用支持 |
+| 普通网页聊天（含 Kimi 网页版） | 不能直接访问本机 MCP；使用 CLI 生成结果后粘贴 | 间接使用 |
 
 命令行示例：
 
@@ -62,6 +75,8 @@ export-quote export-moss result.json --mapping "$EXPORT_QUOTE_MOSS_MAPPING"
   }
 }
 ```
+
+可复制模板见 [integrations/mcp.json.example](integrations/mcp.json.example) 和 [integrations/codex-config.toml.example](integrations/codex-config.toml.example)。模板中的路径必须替换为自己电脑上的**绝对路径**。
 
 DSH overlay 示例见 [integrations/dsh-overlay.yaml](integrations/dsh-overlay.yaml)。它使用 DSH 的 MCP client 插件，把五个工具暴露为 `mcp__export_quote__*`。DSH 仍处于开发者预览阶段，首次使用需按宿主版本核对 profile/patch 参数。
 
