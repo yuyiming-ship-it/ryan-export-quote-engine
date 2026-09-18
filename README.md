@@ -12,7 +12,9 @@
 - 按贸易方式和客户付款条件筛选资金方，并记录不适用原因。
 - 汇总微信等渠道的多供应商询价，保留供应商、时间、有效期、经办人和私有证据引用。
 
-公开仓库只包含通用代码和虚构样例。公司规则、真实价格、客户、飞书链接及报价快照应放在操作系统权限隔离的私有目录。
+公开仓库只包含通用代码、虚构样例和公司配置入口。规则正文、真实价格、客户资料、敏感证据链接及报价快照仍保存在飞书或权限隔离的私有目录。
+
+本公司的配置可直接使用飞书文档和云盘文件夹。引擎通过已登录的 `lark-cli` 在每次调用时读取规则及 MOSS 映射，并把报价快照上传到飞书，同时保留本地不可变副本。详见 [飞书公司配置接入](docs/飞书公司配置接入.md)。
 
 ## 安装与一句话调用
 
@@ -53,6 +55,15 @@ export-quote calculate inquiry.json --out result.json
 export-quote compare scenarios.json
 export-quote customer result.json
 export-quote export-moss result.json --mapping "$EXPORT_QUOTE_MOSS_MAPPING"
+```
+
+也可以直接使用飞书地址：
+
+```bash
+export EXPORT_QUOTE_RULES='https://tdar7qsr83.feishu.cn/docx/FC66dkiFnopKrxx7HUAcvz8Fn4f'
+export EXPORT_QUOTE_STORE='https://tdar7qsr83.feishu.cn/drive/folder/BPxbfMtQHlpMSdd68WwcLKJknsc'
+export EXPORT_QUOTE_MOSS_MAPPING='https://tdar7qsr83.feishu.cn/docx/IYcPd21JTopANxx7QZvcLytZnKd'
+export EXPORT_QUOTE_FEISHU_IDENTITY='user'
 ```
 
 输入格式见 [schemas/quote-request.schema.json](schemas/quote-request.schema.json)，完整虚构样例见 [examples/standard.json](examples/standard.json) 和 [examples/central.json](examples/central.json)。金额、费率及汇率必须用十进制字符串，不能传 JSON 浮点数。
