@@ -147,21 +147,23 @@ AI 应按以下顺序工作：
 
 ## 使用公司规则包
 
-公司真实规则、客户资料、价格和飞书证据不能放进公开 GitHub 仓库。把它们保存在独立私有目录，然后在 MCP 配置中加入：
+公司真实规则、客户资料、价格和飞书证据不能放进公开 GitHub 仓库。本公司已经创建飞书规则、快照和 MOSS 映射资源，可以直接配置：
 
 ```json
 "env": {
-  "EXPORT_QUOTE_RULES": "/私有目录/company-rules/approved-v1.json",
-  "EXPORT_QUOTE_STORE": "/私有目录/quote-snapshots",
-  "EXPORT_QUOTE_MOSS_MAPPING": "/私有目录/company-rules/moss-mapping.json"
+  "EXPORT_QUOTE_RULES": "https://tdar7qsr83.feishu.cn/docx/FC66dkiFnopKrxx7HUAcvz8Fn4f",
+  "EXPORT_QUOTE_STORE": "https://tdar7qsr83.feishu.cn/drive/folder/BPxbfMtQHlpMSdd68WwcLKJknsc",
+  "EXPORT_QUOTE_MOSS_MAPPING": "https://tdar7qsr83.feishu.cn/docx/IYcPd21JTopANxx7QZvcLytZnKd",
+  "EXPORT_QUOTE_FEISHU_IDENTITY": "user"
 }
 ```
 
-- `EXPORT_QUOTE_RULES`：已由负责人确认并批准的规则包。
-- `EXPORT_QUOTE_STORE`：每次报价输入、规则版本和计算过程的快照目录。
-- `EXPORT_QUOTE_MOSS_MAPPING`：经过真实页面核验的 MOSS 字段映射。
+- `EXPORT_QUOTE_RULES`：每次调用从飞书读取；只有负责人批准的版本才能用于正式报价。
+- `EXPORT_QUOTE_STORE`：本地保留不可变副本，并把快照上传到这个飞书文件夹。
+- `EXPORT_QUOTE_MOSS_MAPPING`：调用导出工具时从飞书读取的 MOSS 字段映射。
+- `EXPORT_QUOTE_FEISHU_IDENTITY`：默认 `user`，使用当前员工自己的飞书登录和权限。
 
-当前仓库的公开样例只用于演示。没有已批准规则时，引擎会保留缺项，不会自行套用公司价格。
+使用前需安装并登录 `lark-cli`。完整说明见 [飞书公司配置接入](飞书公司配置接入.md)。当前规则包仍是 `pending`；没有已批准规则时，引擎会阻止正式加载，不会自行套用公司价格。
 
 ## 常见问题
 
