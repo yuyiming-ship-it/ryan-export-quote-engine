@@ -4,9 +4,10 @@
       "command": "/绝对路径/ryan-export-quote-engine/.venv/bin/export-quote-mcp",
       "args": [],
       "env": {
-        "EXPORT_QUOTE_RULES": "/私有目录/company-rules/approved-v1.json",
-        "EXPORT_QUOTE_STORE": "/私有目录/quote-snapshots",
-        "EXPORT_QUOTE_MOSS_MAPPING": "/私有目录/company-rules/moss-mapping.json"
+        "EXPORT_QUOTE_RULES": "https://tdar7qsr83.feishu.cn/docx/FC66dkiFnopKrxx7HUAcvz8Fn4f",
+        "EXPORT_QUOTE_STORE": "https://tdar7qsr83.feishu.cn/drive/folder/BPxbfMtQHlpMSdd68WwcLKJknsc",
+        "EXPORT_QUOTE_MOSS_MAPPING": "https://tdar7qsr83.feishu.cn/docx/IYcPd21JTopANxx7QZvcLytZnKd",
+        "EXPORT_QUOTE_FEISHU_IDENTITY": "user"
       }
     }
   }
