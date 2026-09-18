@@ -9,6 +9,8 @@
 - 把缺失金额与 `0` 分开；过期、冲突和待确认依据会阻止正式报价。
 - 输出内部测算、方案比较、对客报价和 MOSS 填写包。
 - 每次计算保留输入、规则版本、证据、计算过程和内容哈希。
+- 按贸易方式和客户付款条件筛选资金方，并记录不适用原因。
+- 汇总微信等渠道的多供应商询价，保留供应商、时间、有效期、经办人和私有证据引用。
 
 公开仓库只包含通用代码和虚构样例。公司规则、真实价格、客户、飞书链接及报价快照应放在操作系统权限隔离的私有目录。
 
@@ -57,7 +59,9 @@ export-quote export-moss result.json --mapping "$EXPORT_QUOTE_MOSS_MAPPING"
 
 ## MCP 与 DSH
 
-服务器通过 stdio 暴露五个工具：`normalize_request`、`validate_quote`、`calculate_quote`、`compare_quotes`、`export_moss`。
+服务器通过 stdio 暴露六个工具：`normalize_request`、`screen_funders`、`validate_quote`、`calculate_quote`、`compare_quotes`、`export_moss`。
+
+真实的“固定资金政策 + 微信临时询价”流程见 [微信询价与资金方选择工作流](docs/询价与资金方工作流.md)。
 
 通用 MCP 配置：
 
@@ -78,16 +82,18 @@ export-quote export-moss result.json --mapping "$EXPORT_QUOTE_MOSS_MAPPING"
 
 可复制模板见 [integrations/mcp.json.example](integrations/mcp.json.example) 和 [integrations/codex-config.toml.example](integrations/codex-config.toml.example)。模板中的路径必须替换为自己电脑上的**绝对路径**。
 
-DSH overlay 示例见 [integrations/dsh-overlay.yaml](integrations/dsh-overlay.yaml)。它使用 DSH 的 MCP client 插件，把五个工具暴露为 `mcp__export_quote__*`。DSH 仍处于开发者预览阶段，首次使用需按宿主版本核对 profile/patch 参数。
+DSH overlay 示例见 [integrations/dsh-overlay.yaml](integrations/dsh-overlay.yaml)。它使用 DSH 的 MCP client 插件，把工具暴露为 `mcp__export_quote__*`。DSH 仍处于开发者预览阶段，首次使用需按宿主版本核对 profile/patch 参数。
 
 ## 工作流和状态
 
 1. `normalize_request` 保留原文，不猜价格。
-2. AI 集中补齐车型、交易边界、费用、来源和有效期。
-3. `validate_quote` 返回结构化缺项。`blocked` 不可对外，`conditional` 只表示带假设测算，`ready` 也不等于业务审批通过。
-4. `calculate_quote` 计算并保存不可覆盖快照。
-5. `compare_quotes` 仅比较交易边界一致的方案。任一候选缺少交期或垫资指标时，相应维度不排名。
-6. 人选方案后生成对客稿和 MOSS 填写包，由人核对并提交。
+2. AI 集中补齐车型、交易边界、结构化付款条件、费用、来源和有效期。
+3. `screen_funders` 从已确认政策中筛选资金方；由人确认最终选择。
+4. 采购汇总车源、仓储和物流询价，只把明确入选的候选送入计算。
+5. `validate_quote` 返回结构化缺项。`blocked` 不可对外，`conditional` 只表示带假设测算，`ready` 也不等于业务审批通过。
+6. `calculate_quote` 计算并保存不可覆盖快照。
+7. `compare_quotes` 仅比较交易边界一致的方案。任一候选缺少交期或垫资指标时，相应维度不排名。
+8. 人选方案后生成对客稿和 MOSS 填写包，由人核对并提交。
 
 贸易术语只作为适用范围字段；系统不会看到 `FOB/CIF` 就自行增删费用。资金费应拆成实际占款阶段。合作结算价是结果，不会再次计入完整成本。
 
