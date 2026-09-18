@@ -1,0 +1,596 @@
+[
+  {
+    "schema_version": "1.0",
+    "quote_id": "DEMO-001",
+    "quote_date": "2026-09-18",
+    "valid_until": "2099-12-31",
+    "currency": "USD",
+    "business_mode": "standard",
+    "trade_term": "CIF",
+    "delivery_place": "示例目的港",
+    "destination": "示例市场",
+    "payment_terms": "20%定金，到港前尾款",
+    "vehicles": [
+      {
+        "id": "A",
+        "model": "示例车型 A",
+        "configuration": "标准版",
+        "quantity": 2
+      },
+      {
+        "id": "B",
+        "model": "示例车型 B",
+        "configuration": "高配版",
+        "quantity": 1
+      }
+    ],
+    "coverage": {
+      "vehicle": {
+        "status": "complete",
+        "reason": "仅用于公开合成演示，已列出本例全部费用"
+      },
+      "transport": {
+        "status": "complete",
+        "reason": "仅用于公开合成演示，已列出本例全部费用"
+      },
+      "funding": {
+        "status": "complete",
+        "reason": "仅用于公开合成演示，已列出本例全部费用"
+      }
+    },
+    "fx": {
+      "CNY": {
+        "rate": "0.1428571428571428571428571428571428571429",
+        "source": "synthetic://fx",
+        "status": "confirmed",
+        "valid_until": "2099-12-31"
+      }
+    },
+    "profit_target": {
+      "kind": "per_vehicle",
+      "value": "300"
+    },
+    "delivery_days": 30,
+    "own_advance": "5000",
+    "customer_inclusions": [
+      "车辆",
+      "约定运输及保险"
+    ],
+    "customer_exclusions": [
+      "目的地税费"
+    ],
+    "costs": [
+      {
+        "id": "purchase-a",
+        "name": "车源 A",
+        "component": "purchase-a",
+        "category": "vehicle",
+        "amount": "10000",
+        "unit": "per_vehicle",
+        "currency": "USD",
+        "bearers": {
+          "ours": "1"
+        },
+        "allocation": "quantity",
+        "tax_treatment": "演示金额口径，不代表实际税务规则",
+        "source": "synthetic://purchase-a",
+        "status": "confirmed",
+        "valid_until": "2099-12-31",
+        "vehicle_ids": [
+          "A"
+        ]
+      },
+      {
+        "id": "purchase-b",
+        "name": "车源 B",
+        "component": "purchase-b",
+        "category": "vehicle",
+        "amount": "12000",
+        "unit": "per_vehicle",
+        "currency": "USD",
+        "bearers": {
+          "ours": "1"
+        },
+        "allocation": "quantity",
+        "tax_treatment": "演示金额口径，不代表实际税务规则",
+        "source": "synthetic://purchase-b",
+        "status": "confirmed",
+        "valid_until": "2099-12-31",
+        "vehicle_ids": [
+          "B"
+        ]
+      },
+      {
+        "id": "flash",
+        "name": "刷机",
+        "component": "flash",
+        "category": "vehicle",
+        "amount": "350",
+        "unit": "per_vehicle",
+        "currency": "CNY",
+        "bearers": {
+          "ours": "1"
+        },
+        "allocation": "quantity",
+        "tax_treatment": "演示金额口径，不代表实际税务规则",
+        "source": "synthetic://flash",
+        "status": "confirmed",
+        "valid_until": "2099-12-31"
+      },
+      {
+        "id": "domestic",
+        "name": "国内运输",
+        "component": "domestic",
+        "category": "transport",
+        "amount": "2100",
+        "unit": "per_batch",
+        "currency": "CNY",
+        "bearers": {
+          "ours": "1"
+        },
+        "allocation": "quantity",
+        "tax_treatment": "演示金额口径，不代表实际税务规则",
+        "source": "synthetic://domestic",
+        "status": "confirmed",
+        "valid_until": "2099-12-31"
+      },
+      {
+        "id": "freight",
+        "name": "海运",
+        "component": "freight",
+        "category": "transport",
+        "amount": "1800",
+        "unit": "per_container",
+        "currency": "USD",
+        "bearers": {
+          "ours": "1"
+        },
+        "allocation": "quantity",
+        "tax_treatment": "演示金额口径，不代表实际税务规则",
+        "source": "synthetic://freight",
+        "status": "confirmed",
+        "valid_until": "2099-12-31",
+        "units": 1
+      },
+      {
+        "id": "insurance",
+        "name": "运输保险",
+        "component": "insurance",
+        "category": "transport",
+        "amount": "0.001",
+        "unit": "percent",
+        "currency": "USD",
+        "bearers": {
+          "ours": "1"
+        },
+        "allocation": "quantity",
+        "tax_treatment": "演示金额口径，不代表实际税务规则",
+        "source": "synthetic://insurance",
+        "status": "confirmed",
+        "valid_until": "2099-12-31",
+        "basis": "35200",
+        "basis_description": "本例约定投保金额"
+      },
+      {
+        "id": "interest",
+        "name": "第一阶段资金利息",
+        "component": "interest",
+        "category": "funding",
+        "amount": "0.08",
+        "unit": "annual_interest",
+        "currency": "USD",
+        "bearers": {
+          "ours": "1"
+        },
+        "allocation": "quantity",
+        "tax_treatment": "演示金额口径，不代表实际税务规则",
+        "source": "synthetic://interest",
+        "status": "confirmed",
+        "valid_until": "2099-12-31",
+        "basis": "25600",
+        "basis_description": "本例明确的第一阶段垫资本金",
+        "days": 30,
+        "day_basis": 365,
+        "start_date": "2026-09-18",
+        "end_date": "2026-10-18",
+        "day_count": "exclusive_end"
+      }
+    ]
+  },
+  {
+    "schema_version": "1.0",
+    "quote_id": "fast",
+    "quote_date": "2026-09-18",
+    "valid_until": "2099-12-31",
+    "currency": "USD",
+    "business_mode": "standard",
+    "trade_term": "CIF",
+    "delivery_place": "示例目的港",
+    "destination": "示例市场",
+    "payment_terms": "20%定金，到港前尾款",
+    "vehicles": [
+      {
+        "id": "A",
+        "model": "示例车型 A",
+        "configuration": "标准版",
+        "quantity": 2
+      },
+      {
+        "id": "B",
+        "model": "示例车型 B",
+        "configuration": "高配版",
+        "quantity": 1
+      }
+    ],
+    "coverage": {
+      "vehicle": {
+        "status": "complete",
+        "reason": "仅用于公开合成演示，已列出本例全部费用"
+      },
+      "transport": {
+        "status": "complete",
+        "reason": "仅用于公开合成演示，已列出本例全部费用"
+      },
+      "funding": {
+        "status": "complete",
+        "reason": "仅用于公开合成演示，已列出本例全部费用"
+      }
+    },
+    "fx": {
+      "CNY": {
+        "rate": "0.1428571428571428571428571428571428571429",
+        "source": "synthetic://fx",
+        "status": "confirmed",
+        "valid_until": "2099-12-31"
+      }
+    },
+    "profit_target": {
+      "kind": "per_vehicle",
+      "value": "300"
+    },
+    "delivery_days": 20,
+    "own_advance": "5000",
+    "customer_inclusions": [
+      "车辆",
+      "约定运输及保险"
+    ],
+    "customer_exclusions": [
+      "目的地税费"
+    ],
+    "costs": [
+      {
+        "id": "purchase-a",
+        "name": "车源 A",
+        "component": "purchase-a",
+        "category": "vehicle",
+        "amount": "10000",
+        "unit": "per_vehicle",
+        "currency": "USD",
+        "bearers": {
+          "ours": "1"
+        },
+        "allocation": "quantity",
+        "tax_treatment": "演示金额口径，不代表实际税务规则",
+        "source": "synthetic://purchase-a",
+        "status": "confirmed",
+        "valid_until": "2099-12-31",
+        "vehicle_ids": [
+          "A"
+        ]
+      },
+      {
+        "id": "purchase-b",
+        "name": "车源 B",
+        "component": "purchase-b",
+        "category": "vehicle",
+        "amount": "12000",
+        "unit": "per_vehicle",
+        "currency": "USD",
+        "bearers": {
+          "ours": "1"
+        },
+        "allocation": "quantity",
+        "tax_treatment": "演示金额口径，不代表实际税务规则",
+        "source": "synthetic://purchase-b",
+        "status": "confirmed",
+        "valid_until": "2099-12-31",
+        "vehicle_ids": [
+          "B"
+        ]
+      },
+      {
+        "id": "flash",
+        "name": "刷机",
+        "component": "flash",
+        "category": "vehicle",
+        "amount": "350",
+        "unit": "per_vehicle",
+        "currency": "CNY",
+        "bearers": {
+          "ours": "1"
+        },
+        "allocation": "quantity",
+        "tax_treatment": "演示金额口径，不代表实际税务规则",
+        "source": "synthetic://flash",
+        "status": "confirmed",
+        "valid_until": "2099-12-31"
+      },
+      {
+        "id": "domestic",
+        "name": "国内运输",
+        "component": "domestic",
+        "category": "transport",
+        "amount": "2100",
+        "unit": "per_batch",
+        "currency": "CNY",
+        "bearers": {
+          "ours": "1"
+        },
+        "allocation": "quantity",
+        "tax_treatment": "演示金额口径，不代表实际税务规则",
+        "source": "synthetic://domestic",
+        "status": "confirmed",
+        "valid_until": "2099-12-31"
+      },
+      {
+        "id": "freight",
+        "name": "海运",
+        "component": "freight",
+        "category": "transport",
+        "amount": "2200",
+        "unit": "per_container",
+        "currency": "USD",
+        "bearers": {
+          "ours": "1"
+        },
+        "allocation": "quantity",
+        "tax_treatment": "演示金额口径，不代表实际税务规则",
+        "source": "synthetic://freight",
+        "status": "confirmed",
+        "valid_until": "2099-12-31",
+        "units": 1
+      },
+      {
+        "id": "insurance",
+        "name": "运输保险",
+        "component": "insurance",
+        "category": "transport",
+        "amount": "0.001",
+        "unit": "percent",
+        "currency": "USD",
+        "bearers": {
+          "ours": "1"
+        },
+        "allocation": "quantity",
+        "tax_treatment": "演示金额口径，不代表实际税务规则",
+        "source": "synthetic://insurance",
+        "status": "confirmed",
+        "valid_until": "2099-12-31",
+        "basis": "35200",
+        "basis_description": "本例约定投保金额"
+      },
+      {
+        "id": "interest",
+        "name": "第一阶段资金利息",
+        "component": "interest",
+        "category": "funding",
+        "amount": "0.08",
+        "unit": "annual_interest",
+        "currency": "USD",
+        "bearers": {
+          "ours": "1"
+        },
+        "allocation": "quantity",
+        "tax_treatment": "演示金额口径，不代表实际税务规则",
+        "source": "synthetic://interest",
+        "status": "confirmed",
+        "valid_until": "2099-12-31",
+        "basis": "25600",
+        "basis_description": "本例明确的第一阶段垫资本金",
+        "days": 30,
+        "day_basis": 365,
+        "start_date": "2026-09-18",
+        "end_date": "2026-10-18",
+        "day_count": "exclusive_end"
+      }
+    ]
+  },
+  {
+    "schema_version": "1.0",
+    "quote_id": "low-advance",
+    "quote_date": "2026-09-18",
+    "valid_until": "2099-12-31",
+    "currency": "USD",
+    "business_mode": "standard",
+    "trade_term": "CIF",
+    "delivery_place": "示例目的港",
+    "destination": "示例市场",
+    "payment_terms": "20%定金，到港前尾款",
+    "vehicles": [
+      {
+        "id": "A",
+        "model": "示例车型 A",
+        "configuration": "标准版",
+        "quantity": 2
+      },
+      {
+        "id": "B",
+        "model": "示例车型 B",
+        "configuration": "高配版",
+        "quantity": 1
+      }
+    ],
+    "coverage": {
+      "vehicle": {
+        "status": "complete",
+        "reason": "仅用于公开合成演示，已列出本例全部费用"
+      },
+      "transport": {
+        "status": "complete",
+        "reason": "仅用于公开合成演示，已列出本例全部费用"
+      },
+      "funding": {
+        "status": "complete",
+        "reason": "仅用于公开合成演示，已列出本例全部费用"
+      }
+    },
+    "fx": {
+      "CNY": {
+        "rate": "0.1428571428571428571428571428571428571429",
+        "source": "synthetic://fx",
+        "status": "confirmed",
+        "valid_until": "2099-12-31"
+      }
+    },
+    "profit_target": {
+      "kind": "per_vehicle",
+      "value": "300"
+    },
+    "delivery_days": 30,
+    "own_advance": "2000",
+    "customer_inclusions": [
+      "车辆",
+      "约定运输及保险"
+    ],
+    "customer_exclusions": [
+      "目的地税费"
+    ],
+    "costs": [
+      {
+        "id": "purchase-a",
+        "name": "车源 A",
+        "component": "purchase-a",
+        "category": "vehicle",
+        "amount": "10000",
+        "unit": "per_vehicle",
+        "currency": "USD",
+        "bearers": {
+          "ours": "1"
+        },
+        "allocation": "quantity",
+        "tax_treatment": "演示金额口径，不代表实际税务规则",
+        "source": "synthetic://purchase-a",
+        "status": "confirmed",
+        "valid_until": "2099-12-31",
+        "vehicle_ids": [
+          "A"
+        ]
+      },
+      {
+        "id": "purchase-b",
+        "name": "车源 B",
+        "component": "purchase-b",
+        "category": "vehicle",
+        "amount": "12000",
+        "unit": "per_vehicle",
+        "currency": "USD",
+        "bearers": {
+          "ours": "1"
+        },
+        "allocation": "quantity",
+        "tax_treatment": "演示金额口径，不代表实际税务规则",
+        "source": "synthetic://purchase-b",
+        "status": "confirmed",
+        "valid_until": "2099-12-31",
+        "vehicle_ids": [
+          "B"
+        ]
+      },
+      {
+        "id": "flash",
+        "name": "刷机",
+        "component": "flash",
+        "category": "vehicle",
+        "amount": "350",
+        "unit": "per_vehicle",
+        "currency": "CNY",
+        "bearers": {
+          "ours": "1"
+        },
+        "allocation": "quantity",
+        "tax_treatment": "演示金额口径，不代表实际税务规则",
+        "source": "synthetic://flash",
+        "status": "confirmed",
+        "valid_until": "2099-12-31"
+      },
+      {
+        "id": "domestic",
+        "name": "国内运输",
+        "component": "domestic",
+        "category": "transport",
+        "amount": "2100",
+        "unit": "per_batch",
+        "currency": "CNY",
+        "bearers": {
+          "ours": "1"
+        },
+        "allocation": "quantity",
+        "tax_treatment": "演示金额口径，不代表实际税务规则",
+        "source": "synthetic://domestic",
+        "status": "confirmed",
+        "valid_until": "2099-12-31"
+      },
+      {
+        "id": "freight",
+        "name": "海运",
+        "component": "freight",
+        "category": "transport",
+        "amount": "1900",
+        "unit": "per_container",
+        "currency": "USD",
+        "bearers": {
+          "ours": "1"
+        },
+        "allocation": "quantity",
+        "tax_treatment": "演示金额口径，不代表实际税务规则",
+        "source": "synthetic://freight",
+        "status": "confirmed",
+        "valid_until": "2099-12-31",
+        "units": 1
+      },
+      {
+        "id": "insurance",
+        "name": "运输保险",
+        "component": "insurance",
+        "category": "transport",
+        "amount": "0.001",
+        "unit": "percent",
+        "currency": "USD",
+        "bearers": {
+          "ours": "1"
+        },
+        "allocation": "quantity",
+        "tax_treatment": "演示金额口径，不代表实际税务规则",
+        "source": "synthetic://insurance",
+        "status": "confirmed",
+        "valid_until": "2099-12-31",
+        "basis": "35200",
+        "basis_description": "本例约定投保金额"
+      },
+      {
+        "id": "interest",
+        "name": "第一阶段资金利息",
+        "component": "interest",
+        "category": "funding",
+        "amount": "0.08",
+        "unit": "annual_interest",
+        "currency": "USD",
+        "bearers": {
+          "ours": "1"
+        },
+        "allocation": "quantity",
+        "tax_treatment": "演示金额口径，不代表实际税务规则",
+        "source": "synthetic://interest",
+        "status": "confirmed",
+        "valid_until": "2099-12-31",
+        "basis": "25600",
+        "basis_description": "本例明确的第一阶段垫资本金",
+        "days": 30,
+        "day_basis": 365,
+        "start_date": "2026-09-18",
+        "end_date": "2026-10-18",
+        "day_count": "exclusive_end"
+      }
+    ]
+  }
+]
