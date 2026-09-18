@@ -67,7 +67,7 @@ pwd
 2. 名称填 `export_quote`，类型选 `STDIO`。
 3. 命令填 `.venv/bin/export-quote-mcp` 的绝对路径。
 4. 保存并重新启动 Codex。
-5. 在对话里输入 `/mcp`，应看到 `export_quote` 和五个工具。
+5. 在对话里输入 `/mcp`，应看到 `export_quote` 和六个工具。
 
 也可以在终端执行：
 
@@ -89,7 +89,7 @@ kimi mcp add --transport stdio export_quote -- /绝对路径/ryan-export-quote-e
 kimi mcp test export_quote
 ```
 
-测试结果应列出五个工具。运行 `kimi` 后就可以用自然语言要求报价。也可以把 [`integrations/mcp.json.example`](../integrations/mcp.json.example) 的内容按 Kimi 当前配置方式加入 `~/.kimi/mcp.json`。
+测试结果应列出六个工具。运行 `kimi` 后就可以用自然语言要求报价。也可以把 [`integrations/mcp.json.example`](../integrations/mcp.json.example) 的内容按 Kimi 当前配置方式加入 `~/.kimi/mcp.json`。
 
 ### Tencent WorkBuddy
 
@@ -130,10 +130,14 @@ kimi mcp test export_quote
 AI 应按以下顺序工作：
 
 1. 调用 `normalize_request` 整理需求。
-2. 调用 `validate_quote` 检查缺项、过期数据和冲突。
-3. 资料齐全后调用 `calculate_quote`。
-4. 有多个可比方案时调用 `compare_quotes`。
-5. 人工选定方案后调用 `export_moss` 生成填写包。
+2. 把付款条款拆成定金比例、尾款节点、账期和支付方式，再调用 `screen_funders`。
+3. 将车源、仓储、物流等供应商询价整理成带来源和有效期的候选项。
+4. 调用 `validate_quote` 检查缺项、过期数据、资金方适用性和冲突。
+5. 资料齐全后调用 `calculate_quote`。
+6. 有多个可比方案时调用 `compare_quotes`。
+7. 人工选定方案后调用 `export_moss` 生成填写包。
+
+如果你的业务包含固定资金政策和微信临时询价，请继续阅读 [微信询价与资金方选择工作流](询价与资金方工作流.md)。
 
 结果状态的含义：
 
@@ -172,7 +176,7 @@ ls -l /绝对路径/ryan-export-quote-engine/.venv/bin/export-quote-mcp
 先重新运行 `sh scripts/install_local.sh`，再完全重启 AI 产品。JSON 配置不能有中文引号、尾随逗号或注释。
 
 **AI 没有调用计算工具**  
-先查看 MCP 工具列表是否出现五个工具，再明确说“任何金额必须调用 `export_quote` 工具计算”。
+先查看 MCP 工具列表是否出现六个工具，再明确说“任何金额必须调用 `export_quote` 工具计算”。
 
 **结果是 blocked**  
 查看返回的缺项清单。缺运费、汇率、利润目标或有效证据时，正确行为就是停止正式报价，而不是把缺失值当成零。
