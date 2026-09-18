@@ -6,6 +6,7 @@ from pathlib import Path
 from .engine import normalize_request, validate_quote, calculate_quote, compare_quotes, build_scenarios, screen_funders, digest
 from .outputs import customer_quote, export_moss, markdown_report
 from .storage import read_json, load_rules, save_snapshot, private_write, diff_rules, approve_rules
+from .feishu import read_json_source
 
 
 def main():
@@ -38,7 +39,7 @@ def main():
             for item in result['quotes']:
                 save_snapshot(item, args.store)
         elif args.command == 'export-moss':
-            result = export_moss(data.get('result', data), read_json(args.mapping) if args.mapping else None)
+            result = export_moss(data.get('result', data), read_json_source(args.mapping) if args.mapping else None)
         elif args.command == 'customer':
             result = customer_quote(data.get('result', data))
         elif args.command == 'report':
