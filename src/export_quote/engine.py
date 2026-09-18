@@ -53,11 +53,12 @@ def normalize_request(request):
     out.setdefault('exclusions', [])
     out.setdefault('assumptions', [])
     out.setdefault('coverage', {})
+    out.setdefault('customer_payment', {})
     out.setdefault('mode', 'live')
     for key in ('vehicles', 'costs', 'exclusions', 'assumptions'):
         if not isinstance(out[key], list):
             raise ValueError(f'{key} 必须是数组')
-    for key in ('fx', 'coverage'):
+    for key in ('fx', 'coverage', 'customer_payment'):
         if not isinstance(out[key], dict):
             raise ValueError(f'{key} 必须是对象')
     for item in out['vehicles'] + out['costs']:
@@ -78,6 +79,42 @@ def normalize_request(request):
     if any(not isinstance(x, dict) for x in out['fx'].values()) or any(not isinstance(x, dict) for x in out['coverage'].values()):
         raise ValueError('汇率及费用完整性说明必须是对象')
     return out
+
+
+def screen_funders(request, rules=None):
+    """Return confirmed funding options that fit commercial and payment terms."""
+    q = normalize_request(request)
+    payment = q.get('customer_payment', {})
+    eligible, rejected = [], []
+    for option in (rules or {}).get('funding_options', []):
+        reasons = []
+        if option.get('status') != 'confirmed':
+            reasons.append('资金政策未经确认')
+        match = option.get('match', {})
+        dimensions = {
+            'trade_terms': q.get('trade_term'),
+            'payment_terms': q.get('payment_terms'),
+            'destinations': q.get('destination'),
+            'business_modes': q.get('business_mode'),
+            'balance_triggers': payment.get('balance_trigger'),
+            'payment_methods': payment.get('method'),
+        }
+        for key, actual in dimensions.items():
+            allowed = match.get(key)
+            if allowed is not None and actual not in (allowed if isinstance(allowed, list) else [allowed]):
+                reasons.append(f'{key} 不匹配')
+        try:
+            if 'min_deposit_rate' in match and decimal(payment.get('deposit_rate')) < decimal(match['min_deposit_rate']):
+                reasons.append('客户定金比例不足')
+            if 'max_credit_days' in match and decimal(payment.get('credit_days')) > decimal(match['max_credit_days']):
+                reasons.append('客户账期超过资金方上限')
+        except ValueError:
+            reasons.append('缺少可比较的结构化付款条件')
+        summary = {k: deepcopy(option.get(k)) for k in ('id', 'name', 'fee_rule_ids', 'source', 'valid_until') if k in option}
+        summary['reasons'] = reasons
+        (rejected if reasons else eligible).append(summary)
+    return {'eligible': eligible, 'rejected': rejected,
+            'selected_funder_id': q.get('selected_funder_id')}
 
 
 def _issue(issues, code, path, message, owner=None, severity='error'):
@@ -180,6 +217,16 @@ def validate_quote(request, rules=None):
             _issue(issues, 'required', key, f'缺少 {key}')
     if q.get('business_mode') not in ('standard', 'central_procurement'):
         _issue(issues, 'business_mode', 'business_mode', '请选择 standard 或 central_procurement')
+    funding_options = (rules or {}).get('funding_options', [])
+    if funding_options:
+        screening = screen_funders(q, rules)
+        selected = q.get('selected_funder_id')
+        eligible_ids = {x.get('id') for x in screening['eligible']}
+        if not selected:
+            _issue(issues, 'funder_selection', 'selected_funder_id', '已配置资金政策，需从符合条件的资金方中确认一个方案', '资金负责人')
+        elif selected not in eligible_ids:
+            reason = next((x['reasons'] for x in screening['rejected'] if x.get('id') == selected), ['资金方不存在'])
+            _issue(issues, 'funder_ineligible', 'selected_funder_id', '所选资金方不适用：' + '；'.join(reason), '资金负责人')
     if q.get('trade_term') not in ('EXW', 'FCA', 'FOB', 'CFR', 'CIF', 'CPT', 'CIP', 'DAP', 'DPU', 'DDP'):
         _issue(issues, 'trade_term', 'trade_term', '未支持或未记载的贸易术语', severity='warning' if q['mode'] == 'replay' else 'error')
     try:
@@ -233,6 +280,15 @@ def validate_quote(request, rules=None):
         if not selected or len(set(selected)) != len(selected) or any(v not in ids for v in selected):
             _issue(issues, 'allocation_scope', path, '费用关联车型无效或重复')
         _check_evidence(line, path, q, issues)
+        if line.get('source_type') == 'supplier_quote':
+            required_supplier = ('supplier_id', 'supplier_name', 'quoted_at', 'quote_channel', 'quote_ref', 'owner')
+            missing = [key for key in required_supplier if not line.get(key)]
+            if missing:
+                _issue(issues, 'supplier_evidence', path,
+                       '供应商询价缺少：' + '、'.join(missing), line.get('owner') or '采购负责人')
+        if line.get('category') == 'funding' and q.get('selected_funder_id'):
+            if line.get('funder_id') != q['selected_funder_id']:
+                _issue(issues, 'funder_cost_mismatch', path, '资金费用必须关联本次选定的资金方', '资金负责人')
         if line.get('included_in'):
             parent = next((x for x in q['costs'] if x.get('id') == line['included_in']), None)
             if not parent or parent is line or parent.get('included_in'):
@@ -459,11 +515,13 @@ def _calculate(request, rules):
                                'upstream_contract_raw': number(raw_contract),
                                'upstream_contract': number(contract),
                                'contract_rounding_adjustment': number(contract - raw_contract)})
-    result = {'schema_version': VERSION, 'engine_version': '0.1.0', 'quote_id': q.get('quote_id'),
+    result = {'schema_version': VERSION, 'engine_version': '0.2.0', 'quote_id': q.get('quote_id'),
               'status': validation['status'], 'issues': validation['issues'], 'totals': totals,
               'lines': lines, 'input_snapshot': q, 'rules_snapshot': deepcopy(rules or {}),
               'rules_version': (rules or {}).get('version', 'explicit-input'), 'input_hash': digest(q),
               'rules_hash': digest(rules or {}), 'mode': q['mode'], 'approved': False}
+    if (rules or {}).get('funding_options'):
+        result['funder_screening'] = screen_funders(q, rules)
     result['result_hash'] = digest(result)
     return result
 
@@ -515,6 +573,10 @@ def build_scenarios(base, options):
         q = deepcopy(base)
         q['quote_id'] = base['quote_id'] + ':' + ':'.join(c['id'] for c in combination)
         q['costs'] = deepcopy(base.get('costs', [])) + [deepcopy(line) for c in combination for line in c.get('costs', [])]
+        q['selected_options'] = {category: option['id'] for category, option in zip(CATEGORIES, combination)}
+        funding_option = combination[2]
+        if funding_option.get('funder_id'):
+            q['selected_funder_id'] = funding_option['funder_id']
         # End-to-end metrics must come from a verified joint scenario; do not add overlapping periods.
         q.pop('delivery_days', None)
         q.pop('own_advance', None)
