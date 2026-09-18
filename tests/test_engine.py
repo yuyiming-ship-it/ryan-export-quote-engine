@@ -5,7 +5,7 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from export_quote.engine import calculate_quote, validate_quote, compare_quotes, normalize_request, digest, build_scenarios
+from export_quote.engine import calculate_quote, validate_quote, compare_quotes, normalize_request, digest, build_scenarios, screen_funders
 from export_quote.outputs import customer_quote, export_moss
 from export_quote.storage import save_snapshot, read_json, approve_rules, load_rules
 
@@ -241,6 +241,29 @@ class QuoteTests(unittest.TestCase):
     def test_scenario_compatibility(self):
         options={'vehicle':[{'id':'v1'},{'id':'v2'}], 'transport':[{'id':'t'}], 'funding':[{'id':'f','requires':['v1']}]}
         self.assertEqual(len(build_scenarios(self.q, options)),1)
+
+    def test_funder_screening_uses_trade_and_payment_terms(self):
+        self.q['customer_payment'] = {'deposit_rate':'0.2','balance_trigger':'before_arrival','credit_days':'30','method':'TT'}
+        rules = {'funding_options':[
+            {'id':'fit','name':'匹配资金方','status':'confirmed','match':{'trade_terms':['CIF'],'balance_triggers':['before_arrival'],'min_deposit_rate':'0.1','max_credit_days':'45'}},
+            {'id':'wrong','name':'不匹配资金方','status':'confirmed','match':{'trade_terms':['EXW']}},
+            {'id':'pending','name':'待确认资金方','status':'pending','match':{}}
+        ]}
+        result = screen_funders(self.q, rules)
+        self.assertEqual([x['id'] for x in result['eligible']], ['fit'])
+        self.assertEqual({x['id'] for x in result['rejected']}, {'wrong','pending'})
+        self.assertEqual(validate_quote(self.q, rules)['status'], 'blocked')
+        self.q['selected_funder_id'] = 'fit'
+        self.q['costs'][-1]['funder_id'] = 'fit'
+        self.assertEqual(validate_quote(self.q, rules)['status'], 'ready')
+
+    def test_supplier_quote_requires_traceable_wechat_evidence(self):
+        line = self.q['costs'][0]
+        line['source_type'] = 'supplier_quote'
+        self.assertIn('supplier_evidence', [x['code'] for x in validate_quote(self.q)['issues']])
+        line.update(supplier_id='dealer-a', supplier_name='示例车源商', quoted_at='2026-09-18T10:00:00+08:00',
+                    quote_channel='WeChat', quote_ref='private://wechat/quote-a.png', owner='采购甲')
+        self.assertNotIn('supplier_evidence', [x['code'] for x in validate_quote(self.q)['issues']])
 
 
 if __name__ == '__main__':unittest.main()
