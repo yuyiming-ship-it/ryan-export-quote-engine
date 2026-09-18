@@ -4,6 +4,7 @@ from mcp.server.fastmcp import FastMCP
 from . import engine
 from .outputs import export_moss as render_moss
 from .storage import load_rules, read_json, save_snapshot
+from .feishu import read_json_source
 
 server = FastMCP('export-quote')
 
@@ -47,7 +48,7 @@ def compare_quotes(requests: list[dict]) -> dict:
 def export_moss(result: dict) -> dict:
     """生成 MOSS 填写包；不操作线上系统，也不提交审批。"""
     path = os.environ.get('EXPORT_QUOTE_MOSS_MAPPING')
-    return render_moss(result, read_json(path) if path else None)
+    return render_moss(result, read_json_source(path) if path else None)
 
 
 def main():
