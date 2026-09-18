@@ -3,14 +3,14 @@ import argparse
 import json
 import sys
 from pathlib import Path
-from .engine import normalize_request, validate_quote, calculate_quote, compare_quotes, build_scenarios, digest
+from .engine import normalize_request, validate_quote, calculate_quote, compare_quotes, build_scenarios, screen_funders, digest
 from .outputs import customer_quote, export_moss, markdown_report
 from .storage import read_json, load_rules, save_snapshot, private_write, diff_rules, approve_rules
 
 
 def main():
     parser = argparse.ArgumentParser(description='出口报价引擎；真实资料和结果请放在私有目录')
-    parser.add_argument('command', choices=['normalize', 'validate', 'calculate', 'compare', 'export-moss', 'customer', 'report', 'rules-diff', 'rules-approve', 'replay'])
+    parser.add_argument('command', choices=['normalize', 'funders', 'validate', 'calculate', 'compare', 'export-moss', 'customer', 'report', 'rules-diff', 'rules-approve', 'replay'])
     parser.add_argument('input', help='JSON 路径或 -（stdin）')
     parser.add_argument('--rules', help='已批准的私有规则包')
     parser.add_argument('--mapping', help='MOSS 页面字段映射')
@@ -21,9 +21,11 @@ def main():
     args = parser.parse_args()
     try:
         data = json.load(sys.stdin) if args.input == '-' else read_json(args.input)
-        rules = load_rules(args.rules) if args.command in ('validate', 'calculate', 'compare') else None
+        rules = load_rules(args.rules) if args.command in ('funders', 'validate', 'calculate', 'compare') else None
         if args.command == 'normalize':
             result = normalize_request(data)
+        elif args.command == 'funders':
+            result = screen_funders(data, rules)
         elif args.command == 'validate':
             result = validate_quote(data, rules)
         elif args.command == 'calculate':
