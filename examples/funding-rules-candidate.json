@@ -1,0 +1,40 @@
+{
+  "schema_version": "1.0",
+  "version": "demo-funding-candidate",
+  "status": "pending",
+  "fee_rules": [
+    {
+      "id": "demo-funder-a-interest",
+      "status": "confirmed",
+      "values": {
+        "amount": "0.08",
+        "currency": "USD",
+        "unit": "annual_interest",
+        "category": "funding",
+        "tax_treatment": "演示口径",
+        "source_type": "company_rule",
+        "source": "synthetic://funding-policy-a",
+        "status": "confirmed",
+        "valid_until": "2099-12-31"
+      }
+    }
+  ],
+  "funding_options": [
+    {
+      "id": "demo-funder-a",
+      "name": "示例资金方 A",
+      "status": "confirmed",
+      "fee_rule_ids": ["demo-funder-a-interest"],
+      "match": {
+        "trade_terms": ["FOB", "CFR", "CIF"],
+        "balance_triggers": ["before_arrival"],
+        "payment_methods": ["TT"],
+        "min_deposit_rate": "0.1",
+        "max_credit_days": "45"
+      },
+      "source": "synthetic://funding-policy-a",
+      "valid_until": "2099-12-31"
+    }
+  ],
+  "profit_targets": []
+}
