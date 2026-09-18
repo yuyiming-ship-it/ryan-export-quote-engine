@@ -16,7 +16,7 @@
 ```bash
 git clone https://github.com/yuyiming-ship-it/ryan-export-quote-engine.git
 cd ryan-export-quote-engine
-./scripts/install_local.sh
+sh scripts/install_local.sh
 ```
 
 脚本会建立独立的 `.venv` 环境、安装报价引擎和 MCP 组件，再用虚构样例做一次计算。看到 `安装和样例计算均成功` 就完成了。
@@ -24,7 +24,7 @@ cd ryan-export-quote-engine
 如果已经下载项目，进入项目文件夹后只运行：
 
 ```bash
-./scripts/install_local.sh
+sh scripts/install_local.sh
 ```
 
 Windows 用户可以使用 WSL 后执行同样命令。直接使用 PowerShell 时，可手动执行：
@@ -169,7 +169,7 @@ ls -l /绝对路径/ryan-export-quote-engine/.venv/bin/export-quote-mcp
 ```
 
 **MCP 显示红色或连接失败**  
-先重新运行 `./scripts/install_local.sh`，再完全重启 AI 产品。JSON 配置不能有中文引号、尾随逗号或注释。
+先重新运行 `sh scripts/install_local.sh`，再完全重启 AI 产品。JSON 配置不能有中文引号、尾随逗号或注释。
 
 **AI 没有调用计算工具**  
 先查看 MCP 工具列表是否出现五个工具，再明确说“任何金额必须调用 `export_quote` 工具计算”。
@@ -185,7 +185,7 @@ ls -l /绝对路径/ryan-export-quote-engine/.venv/bin/export-quote-mcp
 ```bash
 cd /绝对路径/ryan-export-quote-engine
 git pull
-./scripts/install_local.sh
+sh scripts/install_local.sh
 ```
 
 ## 安全底线
