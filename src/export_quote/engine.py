@@ -515,7 +515,7 @@ def _calculate(request, rules):
                                'upstream_contract_raw': number(raw_contract),
                                'upstream_contract': number(contract),
                                'contract_rounding_adjustment': number(contract - raw_contract)})
-    result = {'schema_version': VERSION, 'engine_version': '0.2.0', 'quote_id': q.get('quote_id'),
+    result = {'schema_version': VERSION, 'engine_version': '0.3.0', 'quote_id': q.get('quote_id'),
               'status': validation['status'], 'issues': validation['issues'], 'totals': totals,
               'lines': lines, 'input_snapshot': q, 'rules_snapshot': deepcopy(rules or {}),
               'rules_version': (rules or {}).get('version', 'explicit-input'), 'input_hash': digest(q),
