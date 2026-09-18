@@ -5,6 +5,7 @@ import json
 import os
 from pathlib import Path
 from .engine import digest
+from .feishu import is_feishu_url, read_json_source, upload_snapshot
 
 
 def read_json(path):
@@ -24,7 +25,7 @@ def load_rules(path=None):
     path = path or os.environ.get('EXPORT_QUOTE_RULES')
     if not path:
         return None
-    pack = read_json(path)
+    pack = read_json_source(path)
     if pack.get('schema_version') != '1.0' or not pack.get('version'):
         raise ValueError('规则包需要 schema_version=1.0 和 version')
     if pack.get('status') != 'confirmed' or not pack.get('approved_by') or not pack.get('approved_at'):
@@ -37,7 +38,9 @@ def load_rules(path=None):
 
 
 def save_snapshot(result, root=None):
-    root = Path(root or os.environ.get('EXPORT_QUOTE_STORE', Path.home() / '.export-quote' / 'quotes'))
+    configured = root or os.environ.get('EXPORT_QUOTE_STORE')
+    feishu_root = configured if is_feishu_url(configured) else None
+    root = Path.home() / '.export-quote' / 'quotes' if feishu_root else Path(configured or Path.home() / '.export-quote' / 'quotes')
     snapshot = {'saved_at': datetime.now(timezone.utc).isoformat(), 'result': result}
     path = root / (result['result_hash'] + '.json')
     if path.exists():
@@ -45,6 +48,8 @@ def save_snapshot(result, root=None):
             raise ValueError('已有快照不一致，拒绝覆盖')
     else:
         private_write(path, snapshot)
+    if feishu_root:
+        upload_snapshot(path, feishu_root, Path.home() / '.export-quote' / 'feishu-uploaded')
     return str(path)
 
 
