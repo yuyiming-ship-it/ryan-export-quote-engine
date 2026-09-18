@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "export-quote-engine"
-version = "0.2.0"
+version = "0.3.0"
 description = "Evidence-based vehicle export quotation engine with private rule packs"
 requires-python = ">=3.10"
 dependencies = []
